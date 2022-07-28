@@ -1,11 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/common';
 import { Todo } from '@prisma/client';
 import { CreateTodoDto } from './dto/create-todo.dto';
+import { ClientProxy } from '@nestjs/microservices';
+import { NOTIFICATION_SERVICE } from './constants/services';
 
 @Injectable()
 export class TodosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(NOTIFICATION_SERVICE) private notificationClient: ClientProxy,
+  ) {}
 
   async getAllTodos(): Promise<Todo[]> {
     // Returns all todos
@@ -24,20 +29,29 @@ export class TodosService {
 
     // Throw an error if todo doesn't exist
     if (!todo) {
-      throw new HttpException('Todo Not Found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Todo Not Found.', HttpStatus.NOT_FOUND);
     }
 
     return todo;
   }
 
   async createTodo({ title }: CreateTodoDto): Promise<Todo> {
-    // Create and return new todo
-    return this.prisma.todo.create({
-      data: {
-        title,
-        userId: 'f3e6fd06-98d0-4fb8-91ee-2141806d038b',
-      },
-    });
+    try {
+      // Create new todo
+      const todo = await this.prisma.todo.create({
+        data: {
+          title,
+          userId: 'f3e6fd06-98d0-4fb8-91ee-2141806d038b',
+        },
+      });
+
+      this.notificationClient.emit('todo_created', { todo });
+
+      return todo;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   async updateTodo(id: string, { title }: CreateTodoDto): Promise<Todo> {
@@ -50,7 +64,7 @@ export class TodosService {
 
     // Throw an error if todo doesn't exist
     if (!todo) {
-      throw new HttpException('Todo Not Found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Todo Not Found.', HttpStatus.NOT_FOUND);
     }
 
     // Updates the title of the todo
@@ -74,7 +88,7 @@ export class TodosService {
 
     // Throw an error if todo doesn't exist
     if (!todo) {
-      throw new HttpException('Todo Not Found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Todo Not Found.', HttpStatus.NOT_FOUND);
     }
 
     // Toggle isCompleted from true to false and vice versa
@@ -103,7 +117,7 @@ export class TodosService {
 
     // Throw an error if todo doesn't exist
     if (!todo) {
-      throw new HttpException('Todo Not Found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Todo Not Found.', HttpStatus.NOT_FOUND);
     }
 
     // Delete todo

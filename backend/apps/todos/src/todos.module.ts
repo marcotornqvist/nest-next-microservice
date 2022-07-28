@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TodosController } from './todos.controller';
 import { TodosService } from './todos.service';
-import { PrismaModule } from '@app/common';
+import { PrismaModule, RmqModule } from '@app/common';
+import { ConfigModule } from '@nestjs/config';
+import { NOTIFICATION_SERVICE } from './constants/services';
 
 // create a separate service in the libs folder for the prisma connection.
 // seed the database
@@ -14,7 +16,16 @@ import { PrismaModule } from '@app/common';
 // https://www.prisma.io/blog/nestjs-prisma-rest-api-7D056s1BmOL0
 
 @Module({
-  imports: [PrismaModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: './apps/todos/.env',
+    }),
+    PrismaModule,
+    RmqModule.register({
+      name: NOTIFICATION_SERVICE,
+    }),
+  ],
   controllers: [TodosController],
   providers: [TodosService],
 })

@@ -45,6 +45,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+# Running the RabbitMQ server on http://localhost:15672/
+
+$ rabbitmq-server
+
+````
+
 ## Test
 
 ```bash
@@ -56,7 +62,7 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
-```
+````
 
 ## Support
 
