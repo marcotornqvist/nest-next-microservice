@@ -1,14 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Todo } from '@prisma/client';
 
 @Injectable()
 export class NotificationService {
   private readonly logger = new Logger(NotificationService.name);
 
-  getHello(): string {
+  async getHello(): Promise<string> {
     return 'Hello World!';
   }
 
-  notify(data: any) {
-    this.logger.log('Notification...', data);
+  async notify(todo: Todo) {
+    console.log(todo);
   }
 }
