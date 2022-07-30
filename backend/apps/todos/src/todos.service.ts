@@ -3,7 +3,7 @@ import { PrismaService } from '@app/common';
 import { Todo } from '@prisma/client';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { ClientProxy } from '@nestjs/microservices';
-import { NOTIFICATION_SERVICE } from './constants/services';
+import { NOTIFICATION_SERVICE } from '@app/utils';
 
 @Injectable()
 export class TodosService {
@@ -13,7 +13,6 @@ export class TodosService {
   ) {}
 
   async getAllTodos(): Promise<Todo[]> {
-    // Returns all todos
     return this.prisma.todo.findMany({
       orderBy: { updatedAt: 'desc' },
     });

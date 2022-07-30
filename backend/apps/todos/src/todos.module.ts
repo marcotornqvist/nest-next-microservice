@@ -3,7 +3,7 @@ import { TodosController } from './todos.controller';
 import { TodosService } from './todos.service';
 import { PrismaModule, RmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
-import { NOTIFICATION_SERVICE } from './constants/services';
+import { NOTIFICATION_SERVICE } from '@app/utils';
 
 // create a separate service in the libs folder for the prisma connection.
 // seed the database

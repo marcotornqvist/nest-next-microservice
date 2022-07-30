@@ -20,8 +20,8 @@
     "paths": {
       "@app/common": ["libs/common/src"],
       "@app/common/*": ["libs/common/src/*"],
-      "@app/prisma": ["libs/common/prisma/src"],
-      "@app/prisma/*": ["libs/common/prisma/src/*"]
+      "@app/utils": ["libs/utils/src"],
+      "@app/utils/*": ["libs/utils/src/*"]
     }
   }
 }
