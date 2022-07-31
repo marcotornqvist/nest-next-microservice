@@ -34,7 +34,11 @@ docker-compose up --build
 
 ### 4. Prisma Migrate
 
-**Run commands below with Docker CLI in order for them to work.**
+**Run commands below with Docker CLI to run initial migrations & seed database with data.**
+
+```bash
+npx prisma migrate dev && npx prisma db seed
+```
 
 [Prisma Migrate](https://github.com/prisma/prisma2/tree/master/docs/prisma-migrate) is used to manage the schema and migration of the database. Prisma datasource requires an environment variable `DATABASE_URL` for the connection to the PostgreSQL database. Prisma reads the `DATABASE_URL` from the root [.env](./.env) file.
 
