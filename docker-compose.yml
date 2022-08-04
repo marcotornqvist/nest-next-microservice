@@ -1,4 +1,14 @@
 services:
+  prisma-studio:
+    container_name: prisma-studio
+    image: timothyjmiller/prisma-studio:latest
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - 5555:5555
+    depends_on:
+      - postgres
   postgres:
     image: postgres
     container_name: postgres
@@ -13,8 +23,8 @@ services:
     container_name: rabbitmq
     image: rabbitmq:3-management
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - '5672:5672'
+      - '15672:15672'
   todos:
     container_name: todos
     build:
@@ -26,7 +36,7 @@ services:
       - ./backend/apps/todos/.env
     volumes:
       - ./backend:/usr/src/app
-      - /backend/usr/src/app/node_modules
+      - /usr/src/app/node_modules
     ports:
       - 4000:4000
     depends_on:
@@ -46,7 +56,7 @@ services:
       - ./backend/apps/notification/.env
     volumes:
       - ./backend:/usr/src/app
-      - /backend/usr/src/app/node_modules
+      - /usr/src/app/node_modules
     depends_on:
       - postgres
       - rabbitmq
@@ -62,7 +72,7 @@ services:
       - ./backend/apps/auth/.env
     volumes:
       - ./backend:/usr/src/app
-      - /backend/usr/src/app/node_modules
+      - /usr/src/app/node_modules
     depends_on:
       - postgres
       - rabbitmq
@@ -128,7 +138,7 @@ volumes:
 #     env_file:
 #       - .env
 #     # environment:
-#     #   - POSTGRES_USER=postgres
+#     #   - POSTGRES_USERNAME=postgres
 #     #   - POSTGRES_PASSWORD=test123
 #     #   - POSTGRES_DB=nest-todo-app
 #     volumes:

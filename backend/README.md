@@ -7,6 +7,12 @@ implement:
 - https://www.tomray.dev/nestjs-caching-redis
 - https://moduscreate.com/blog/deploy-a-nestjs-application-to-amazon-ecs-using-codepipeline/
 
+<!-- ### Prisma Studio
+
+```bash
+docker run -e DATABASE_URL=postgresql://user:pass@localhost5432/data?schema=data codejamninja/prisma-studio
+``` -->
+
 ### 1. Install Dependencies
 
 Install NestJS CLI

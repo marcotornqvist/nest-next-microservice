@@ -36,7 +36,7 @@ export class TodosController {
 
   @Post()
   @ApiCreatedResponse({ type: TodoEntity })
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async createTodo(
     @Body() body: CreateTodoDto,
     @Req() req: any,
