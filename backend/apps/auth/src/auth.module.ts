@@ -15,7 +15,7 @@ import { UsersModule } from './users/users.module';
     RmqModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['./apps/auth/.env'],
+      envFilePath: './apps/auth/.env',
     }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
