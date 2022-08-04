@@ -2,7 +2,10 @@
 
 NestJS application that implements a Microservice architecture with RabbitMQ as the message-broker. All services are ran inside of their own Docker container and each service communicate with each other with the help of RabbitMQ.
 
-implement: https://www.tomray.dev/nestjs-caching-redis
+implement:
+
+- https://www.tomray.dev/nestjs-caching-redis
+- https://moduscreate.com/blog/deploy-a-nestjs-application-to-amazon-ecs-using-codepipeline/
 
 ### 1. Install Dependencies
 

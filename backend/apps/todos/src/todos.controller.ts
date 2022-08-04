@@ -7,12 +7,15 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoEntity } from './entities/todo.entity';
 import { Todo } from '@prisma/client';
+import { JwtAuthGuard } from '@app/common';
 
 @Controller('todos')
 @ApiTags('Todos')
@@ -33,8 +36,12 @@ export class TodosController {
 
   @Post()
   @ApiCreatedResponse({ type: TodoEntity })
-  async createTodo(@Body() body: CreateTodoDto): Promise<Todo> {
-    return this.todosService.createTodo(body);
+  @UseGuards(JwtAuthGuard)
+  async createTodo(
+    @Body() body: CreateTodoDto,
+    @Req() req: any,
+  ): Promise<Todo> {
+    return this.todosService.createTodo(body, req.cookies?.Authentication);
   }
 
   @Patch(':id')

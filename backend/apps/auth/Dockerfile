@@ -37,7 +37,7 @@ COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
 
-CMD ["node", "dist/apps/todos/main"]
+CMD ["node", "dist/apps/auth/main"]
 
 
 
@@ -79,6 +79,6 @@ CMD ["node", "dist/apps/todos/main"]
 # COPY --from=development /usr/src/app/prisma ./prisma
 
 # EXPOSE 4000
-# CMD ["node", "dist/apps/todos/main"]
+# CMD ["node", "dist/apps/auth/main"]
 
 

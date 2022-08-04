@@ -1,5 +1,3 @@
-
-
 # Use node alpine as it's a small node image
 FROM node:alpine
 

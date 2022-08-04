@@ -7,7 +7,7 @@ export class NotificationService {
     return 'Hello World!';
   }
 
-  async notify(todo: Todo) {
-    console.log(todo);
+  async notify(data: any) {
+    console.log(data);
   }
 }

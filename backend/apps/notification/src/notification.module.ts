@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RmqModule } from '@app/common';
+import { AuthModule, RmqModule } from '@app/common';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
 import { ConfigModule } from '@nestjs/config';
@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
       envFilePath: './apps/notification/.env',
     }),
     RmqModule,
+    AuthModule,
   ],
   controllers: [NotificationController],
   providers: [NotificationService],

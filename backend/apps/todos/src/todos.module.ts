@@ -4,6 +4,7 @@ import { TodosService } from './todos.service';
 import { PrismaModule, RmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 import { NOTIFICATION_SERVICE } from '@app/utils';
+import { AuthModule } from '@app/common';
 
 // create a separate service in the libs folder for the prisma connection.
 // seed the database
@@ -25,6 +26,7 @@ import { NOTIFICATION_SERVICE } from '@app/utils';
     RmqModule.register({
       name: NOTIFICATION_SERVICE,
     }),
+    AuthModule,
   ],
   controllers: [TodosController],
   providers: [TodosService],

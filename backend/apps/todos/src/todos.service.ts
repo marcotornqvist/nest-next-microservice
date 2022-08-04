@@ -34,7 +34,10 @@ export class TodosService {
     return todo;
   }
 
-  async createTodo({ title }: CreateTodoDto): Promise<Todo> {
+  async createTodo(
+    { title }: CreateTodoDto,
+    authentication: string,
+  ): Promise<Todo> {
     try {
       // Create new todo
       const todo = await this.prisma.todo.create({
@@ -44,7 +47,10 @@ export class TodosService {
         },
       });
 
-      this.notificationClient.emit('todo_created', { todo });
+      this.notificationClient.emit('todo_created', {
+        todo,
+        Authentication: authentication,
+      });
 
       return todo;
     } catch (error) {
