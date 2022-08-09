@@ -1,72 +1,111 @@
 import { PrismaService } from '@app/common';
 import {
   BadRequestException,
+  Body,
   Injectable,
-  UnauthorizedException,
+  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { User } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
-import { CreateUserRequest } from './dto/create-user.request';
+import { Response } from 'express';
+import { UpdateEmailRequest } from './dto/update-email.dto';
+import { UpdateNameRequest } from './dto/update-name.dto';
+import { UpdatePasswordRequest } from './dto/update-password.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async createUser(request: CreateUserRequest) {
-    await this.validateCreateUserRequest(request);
+  async getUsers() {
+    return this.prisma.user.findMany();
+  }
 
-    const password = await bcrypt.hash(request.password, 10);
+  async updateEmail(@Body() { email }: UpdateEmailRequest) {
+    return email;
+  }
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: request.email,
-        password,
+  async updateName(@Body() { name }: UpdateNameRequest) {
+    return name;
+  }
+
+  async updatePassword(
+    @Body()
+    { currentPassword, newPassword, confirmPassword }: UpdatePasswordRequest,
+  ) {
+    return { currentPassword, newPassword, confirmPassword };
+  }
+
+  // Deletes the logged in user
+  async deleteMe(response: Response) {
+    // Todo: delete from database & cognito
+    this.removeAuthToken(response);
+  }
+
+  async validateEmail(email: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (user) {
+        throw new UnprocessableEntityException('Email already exists.');
+      }
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  async validatePassword(password: string, confirmPassword: string) {
+    if (password !== confirmPassword) {
+      throw new BadRequestException("Password don't match");
+    }
+  }
+
+  async getUserById(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
       },
     });
+
+    if (!user) {
+      throw new NotFoundException('User was not found.');
+    }
 
     return user;
   }
 
-  private async validateCreateUserRequest(request: CreateUserRequest) {
-    let user: User;
-
-    try {
-      user = await this.prisma.user.findUnique({
-        where: {
-          email: request.email,
-        },
-      });
-    } catch (err) {
-      throw new BadRequestException(err);
-    }
-
-    if (user) {
-      throw new UnprocessableEntityException('Email already exists.');
-    }
-  }
-
-  async validateUser(email: string, password: string) {
+  async getUserByEmail(email: string) {
     const user = await this.prisma.user.findUnique({
       where: {
         email,
       },
     });
 
-    const passwordIsValid = await bcrypt.compare(password, user.password);
-
-    if (!passwordIsValid) {
-      throw new UnauthorizedException('Credentials are not valid.');
+    if (!user) {
+      throw new NotFoundException('User was not found.');
     }
 
     return user;
   }
 
-  async getUser(userId: string) {
-    return this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
+  removeAuthToken(response: Response) {
+    response.cookie('Authentication', '', {
+      httpOnly: true,
+      expires: new Date(),
     });
   }
+
+  // changePassword({ currentPassword, newPassword }) {
+  //   this.user.setSignInUserSession(session);
+  //   return new Promise((resolve, reject) => {
+  //     this.user.changePassword(currentPassword, newPassword, (err, result) => {
+  //       if (err) {
+  //         return reject(err);
+  //       }
+  //       return resolve(result);
+  //     });
+  //   });
+  // }
 }

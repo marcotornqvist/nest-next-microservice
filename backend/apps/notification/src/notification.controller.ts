@@ -18,8 +18,11 @@ export class NotificationController {
 
   @EventPattern('todo_created')
   @UseGuards(JwtAuthGuard)
-  async handleTodoCreated(@Payload() data: any, @Ctx() context: RmqContext) {
-    this.notificationService.notify(data);
+  async handleTodoCreated(
+    @Payload() { todo }: { todo: Todo },
+    @Ctx() context: RmqContext,
+  ) {
+    this.notificationService.notify(todo);
     this.rmqService.ack(context);
   }
 }

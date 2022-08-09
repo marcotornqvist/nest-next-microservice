@@ -14,8 +14,9 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoEntity } from './entities/todo.entity';
-import { Todo } from '@prisma/client';
+import { Todo, User } from '@prisma/client';
 import { JwtAuthGuard } from '@app/common';
+import { CurrentUser } from 'apps/auth/src/current-user.decorator';
 
 @Controller('todos')
 @ApiTags('Todos')
@@ -40,8 +41,13 @@ export class TodosController {
   async createTodo(
     @Body() body: CreateTodoDto,
     @Req() req: any,
+    @CurrentUser() user: User,
   ): Promise<Todo> {
-    return this.todosService.createTodo(body, req.cookies?.Authentication);
+    return this.todosService.createTodo(
+      user.id,
+      body,
+      req.cookies?.Authentication,
+    );
   }
 
   @Patch(':id')

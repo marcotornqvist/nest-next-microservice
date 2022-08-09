@@ -15,7 +15,6 @@ model User {
   id        String    @id @default(uuid())
   name      String?
   email     String    @unique
-  password  String
   userRole  UserRole  @default(USER)
   todos     Todo[]
   createdAt DateTime  @default(now())

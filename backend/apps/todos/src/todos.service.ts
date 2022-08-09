@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@app/common';
 import { Todo } from '@prisma/client';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -18,23 +18,8 @@ export class TodosService {
     });
   }
 
-  async getTodoById(id: string): Promise<Todo> {
-    // Find todo by id
-    const todo = await this.prisma.todo.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    // Throw an error if todo doesn't exist
-    if (!todo) {
-      throw new HttpException('Todo Not Found.', HttpStatus.NOT_FOUND);
-    }
-
-    return todo;
-  }
-
   async createTodo(
+    userId: string,
     { title }: CreateTodoDto,
     authentication: string,
   ): Promise<Todo> {
@@ -43,7 +28,7 @@ export class TodosService {
       const todo = await this.prisma.todo.create({
         data: {
           title,
-          userId: 'f3e6fd06-98d0-4fb8-91ee-2141806d038b',
+          userId,
         },
       });
 
@@ -60,17 +45,7 @@ export class TodosService {
   }
 
   async updateTodo(id: string, { title }: CreateTodoDto): Promise<Todo> {
-    // Find todo by id
-    const todo = await this.prisma.todo.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    // Throw an error if todo doesn't exist
-    if (!todo) {
-      throw new HttpException('Todo Not Found.', HttpStatus.NOT_FOUND);
-    }
+    await this.getTodoById(id);
 
     // Updates the title of the todo
     return this.prisma.todo.update({
@@ -84,17 +59,7 @@ export class TodosService {
   }
 
   async toggleIsCompletedTodo(id: string): Promise<boolean> {
-    // Find todo by id
-    const todo = await this.prisma.todo.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    // Throw an error if todo doesn't exist
-    if (!todo) {
-      throw new HttpException('Todo Not Found.', HttpStatus.NOT_FOUND);
-    }
+    const todo = await this.getTodoById(id);
 
     // Toggle isCompleted from true to false and vice versa
     const { isCompleted } = await this.prisma.todo.update({
@@ -113,17 +78,7 @@ export class TodosService {
   }
 
   async deleteTodo(id: string): Promise<boolean> {
-    // Find todo by id
-    const todo = await this.prisma.todo.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    // Throw an error if todo doesn't exist
-    if (!todo) {
-      throw new HttpException('Todo Not Found.', HttpStatus.NOT_FOUND);
-    }
+    await this.getTodoById(id);
 
     // Delete todo
     await this.prisma.todo.delete({
@@ -133,5 +88,21 @@ export class TodosService {
     });
 
     return true;
+  }
+
+  async getTodoById(id: string): Promise<Todo> {
+    // Find todo by id
+    const todo = await this.prisma.todo.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    // Throw an error if todo doesn't exist
+    if (!todo) {
+      throw new NotFoundException('Todo Not Found.');
+    }
+
+    return todo;
   }
 }

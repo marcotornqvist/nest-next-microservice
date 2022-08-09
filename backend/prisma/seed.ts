@@ -14,7 +14,6 @@ async function main() {
       id: '74783f1d-22a1-4cb8-bb80-dff508883a23',
       name: 'John Doe',
       email: 'john@gmail.com',
-      password: 'test123',
       userRole: 'ADMIN',
     },
   });
@@ -26,7 +25,6 @@ async function main() {
       id: 'f3e6fd06-98d0-4fb8-91ee-2141806d038b',
       name: 'Jane Doe',
       email: 'jane@gmail.com',
-      password: 'test123',
     },
   });
 

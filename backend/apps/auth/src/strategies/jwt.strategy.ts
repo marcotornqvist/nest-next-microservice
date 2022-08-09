@@ -1,9 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { TokenPayload } from '../auth.service';
+import { PassportStrategy } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import { passportJwtSecret } from 'jwks-rsa';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -17,14 +17,25 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           return request?.Authentication;
         },
       ]),
-      secretOrKey: configService.get('JWT_SECRET'),
+
+      secretOrKeyProvider: passportJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `${configService.get(
+          'COGNITO_AUTHORITY',
+        )}/.well-known/jwks.json`,
+      }),
+
+      audience: configService.get('COGNITO_CLIENT_ID'),
+      issuer: configService.get('COGNITO_AUTHORITY'),
+      algorithms: ['RS256'],
     });
   }
 
-  // This function
-  async validate({ userId }: TokenPayload) {
+  async validate(payload: any) {
     try {
-      return await this.usersService.getUser(userId);
+      return await this.usersService.getUserById(payload['cognito:username']);
     } catch (err) {
       throw new UnauthorizedException();
     }

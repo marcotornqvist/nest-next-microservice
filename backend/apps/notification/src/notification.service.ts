@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Todo } from '@prisma/client';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class NotificationService {
     return 'Hello World!';
   }
 
-  async notify(data: any) {
-    console.log(data);
+  async notify(todo: Todo) {
+    console.log(todo);
   }
 }
