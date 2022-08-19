@@ -7,6 +7,7 @@ NestJS application that implements a Microservice architecture with RabbitMQ as 
 - **NestJS Redis Caching:** https://www.tomray.dev/nestjs-caching-redis
 - **NEST to EC2 with CI/CD:** https://moduscreate.com/blog/deploy-a-nestjs-application-to-amazon-ecs-using-codepipeline/
 - **Nest RBAC:** https://www.youtube.com/watch?v=xd3LJqdU1ig
+- **Astro:** https://www.youtube.com/watch?v=PSzCtdM20Fc&ab_channel=JackHerrington
 
 <br />
 
@@ -32,7 +33,7 @@ cd ./frontend && npm install
 
 ### **2. AWS Cognito**
 
-Follow the images and steps in the [tutorial](https://medium.com/weekly-webtips/authentication-with-aws-cognito-and-nestjs-9f04c766f3fd) on how to setup AWS Cognito (not the code parts).
+Follow the images and steps in the [tutorial](https://medium.com/weekly-webtips/authentication-with-aws-cognito-and-nestjs-9f04c766f3fd) on how to setup AWS Cognito (not the code parts). (Remember to create a serverless function in AWS that auto confirms every user, otherwise you'll have to do it manually).
 
 ### **3. Environment Variables**
 
@@ -46,7 +47,7 @@ cp .env.example .env
 Run the same command "cp .env.example .env" for all the files in the folders marked below. Remember to insert the correct values for the environment variables in their own files, but don't change the environment variables that have pre-filled values.
 
 ```
-├── backend/apps/auth
+├── backend/
 │   └── .env.example  <–––
 ├── backend/apps/todos
 │   └── .env.example  <–––
@@ -72,10 +73,16 @@ docker-compose up
 
 ### **5. Prisma & Postgres**
 
-Run commands below with Docker CLI in one off the services such as the todo service to run migrations.
+Run commands below with Docker CLI to run migrations.
 
 ```bash
 npx prisma migrate dev
+```
+
+Run commands below in ./backend to update node_modules and prisma types
+
+```bash
+cd backend && npm install
 ```
 
 **Important:** "npx prisma db seed" does not work since they depend on AWS Cognito users which are not made.
