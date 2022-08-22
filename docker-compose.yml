@@ -25,6 +25,8 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+    # volumes:
+    #   - /var/lib/rabbitmq
   todos:
     container_name: todos
     build:
@@ -41,9 +43,9 @@ services:
       - 4000:4000
     depends_on:
       - postgres
-      - rabbitmq
       - auth
       - notification
+      - rabbitmq
       # - redis
   notification:
     container_name: notification
@@ -59,8 +61,8 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - postgres
-      - rabbitmq
       - auth
+      - rabbitmq
   auth:
     container_name: auth
     build:
@@ -85,7 +87,6 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-      - /app/.next
     ports:
       - 3000:3000
     stdin_open: true

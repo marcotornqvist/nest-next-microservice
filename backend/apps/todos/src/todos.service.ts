@@ -24,7 +24,6 @@ export class TodosService {
     authentication: string,
   ): Promise<Todo> {
     try {
-      // Create new todo
       const todo = await this.prisma.todo.create({
         data: {
           title,
@@ -32,6 +31,7 @@ export class TodosService {
         },
       });
 
+      // Emit todo to notification service
       this.notificationClient.emit('todo_created', {
         todo,
         Authentication: authentication,

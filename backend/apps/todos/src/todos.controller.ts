@@ -24,6 +24,7 @@ export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
   @Get()
+  // @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: TodoEntity, isArray: true })
   async getAllTodos(): Promise<Todo[]> {
     return this.todosService.getAllTodos();

@@ -12,10 +12,10 @@ import { AuthModule } from '@app/common';
       isGlobal: true,
       envFilePath: './apps/todos/.env',
     }),
-    PrismaModule,
     RmqModule.register({
       name: NOTIFICATION_SERVICE,
     }),
+    PrismaModule,
     AuthModule,
   ],
   controllers: [TodosController],
