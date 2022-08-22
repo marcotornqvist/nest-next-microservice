@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthModule, RmqModule } from '@app/common';
+import { AuthModule, PrismaModule, RmqModule } from '@app/common';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
 import { ConfigModule } from '@nestjs/config';
@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       envFilePath: './apps/notification/.env',
     }),
+    PrismaModule,
     RmqModule,
     AuthModule,
   ],

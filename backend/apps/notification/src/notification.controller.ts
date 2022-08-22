@@ -16,6 +16,7 @@ export class NotificationController {
     return this.notificationService.getHello();
   }
 
+  // Create a dashboard on the frontend for the admin user to monitor all incoming(created) todos.
   @EventPattern('todo_created')
   @UseGuards(JwtAuthGuard)
   async handleTodoCreated(
