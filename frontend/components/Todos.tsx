@@ -1,43 +1,27 @@
-import type { Todo } from '../types';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { FC, useContext } from 'react';
+import type { Todo, TodoContextType } from '../types';
+import { useQuery } from '@tanstack/react-query';
+import { TodoContext } from '../context/todoContext';
+import { getAllTodos } from '../query-hooks/todo';
 import TodoItem from './TodoItem';
 
-// Fetcher function
-const getTodos = async () => {
-  const res = await fetch('http://localhost:4000/todos');
-  return res.json();
-};
+const Todos: FC = () => {
+  const { currentTodo, updateTodo } = useContext(
+    TodoContext,
+  ) as TodoContextType;
 
-const Todos = () => {
-  // Access the client
-  const queryClient = useQueryClient();
-
-  // Queries
-  const { data, isLoading, error } = useQuery(['todos'], getTodos);
-
-  if (isLoading) return <div>Loading</div>;
-
+  const { data, isLoading, error } = useQuery(['todos'], getAllTodos);
+  // if (isLoading) return <div>Loading</div>;
   // if (error) return <div>An error has occurred: {error}</div>;
-
-  // // Mutations
-  // const mutation = useMutation(postTodo, {
-  //   onSuccess: () => {
-  //     // Invalidate and refetch
-  //     queryClient.invalidateQueries(['todos']);
-  //   },
-  // });
 
   return (
     <ul className="todos">
-      {data?.map((item: Todo) => (
+      {data?.map((todo: Todo) => (
         <TodoItem
-          key={item.id}
-          title={item.title}
-          id={item.id}
-          isCompleted={item.isCompleted}
-          userId={item.userId}
-          createdAt={item.createdAt}
-          updatedAt={item.updatedAt}
+          key={todo.id}
+          todo={todo}
+          currentTodoId={currentTodo?.id}
+          updateTodo={updateTodo}
         />
       ))}
     </ul>

@@ -38,14 +38,15 @@ export class TodosController {
 
   @Post()
   @ApiCreatedResponse({ type: TodoEntity })
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async createTodo(
     @Body() body: CreateTodoDto,
     @Req() req: any,
-    @CurrentUser() user: User,
+    // @CurrentUser() user: User,
   ): Promise<Todo> {
     return this.todosService.createTodo(
-      user.id,
+      // user.id,
+      '87ef0080-5b10-4482-b539-bcb9cd0d5468',
       body,
       req.cookies?.Authentication,
     );
