@@ -1,9 +1,7 @@
-import { useContext, FC } from 'react';
+import { useContext, SyntheticEvent, FC } from 'react';
 import { TodoContext } from '../context/todoContext';
-import { Todo, TodoContextType } from '../types';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { createTodo } from '../query-hooks/todo';
-import axios from 'axios';
+import { TodoContextType } from '../types';
+import { useCreateTodo, useUpdateTodo } from '../react-query-hooks/todo-hooks';
 import styles from '../styles/modules/Button.module.scss';
 import inputStyles from '../styles/modules/Input.module.scss';
 
@@ -13,52 +11,21 @@ const Form: FC = () => {
   const { title, setTitle, currentTodo, updateTodo } = useContext(
     TodoContext,
   ) as TodoContextType;
-  const queryClient = useQueryClient();
+  const updateTodoMutation = useUpdateTodo();
+  const createTodoMutation = useCreateTodo();
 
-  const addTodoMutation = useMutation(
-    (title) => axios.post('http://localhost:4000/todos', { title }),
-    {
-      onMutate: async (title: string) => {
-        setTitle('');
-        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-        await queryClient.cancelQueries(['todos']);
-
-        // Create optimistic todo
-        const optimisticTodo = {
-          id: Math.random().toString(36).substring(4),
-          title,
-        };
-
-        // Optimistically update to the new value
-        queryClient.setQueryData<Todo[]>(['todos'], (previous: any) => [
-          optimisticTodo,
-          ...previous,
-        ]);
-
-        return { optimisticTodo };
-      },
-      // If the mutation fails, use the context returned from onMutate to roll back
-      onSuccess: (result, variables, context) => {
-        // Replace optimistic todo in the todos list with the result
-        queryClient.setQueryData(['todos'], (previous: any) =>
-          previous.map((todo: any) =>
-            todo.id === context?.optimisticTodo.id ? result.data : todo,
-          ),
-        );
-      },
-      onError: (error, variables, context) => {
-        // Remove optimistic todo from the todos list
-        queryClient.setQueryData(['todos'], (previous: any) => {
-          return previous.filter(
-            (todo: any) => todo.id !== context?.optimisticTodo.id,
-          );
-        });
-      },
-    },
-  );
+  const handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+    if (currentTodo) {
+      updateTodoMutation.mutate({ title, id: currentTodo.id });
+      updateTodo(null);
+    } else {
+      createTodoMutation.mutate(title);
+    }
+  };
 
   return (
-    <div className="form-container">
+    <form className="form-container" onSubmit={handleSubmit}>
       <div className={inputStyles.inputGroup}>
         <label>Todo Name</label>
         <div className="input-container">
@@ -90,16 +57,10 @@ const Form: FC = () => {
           </svg>
         </div>
       </div>
-      <button
-        className={styles.button}
-        onClick={() => {
-          addTodoMutation.mutate(title);
-          updateTodo(null);
-        }}
-      >
+      <button className={styles.button} onClick={handleSubmit}>
         {currentTodo ? 'Update' : 'Submit'}
       </button>
-    </div>
+    </form>
   );
 };
 

@@ -20,3 +20,8 @@ export interface TodoContextType {
   setTitle: (title: string) => void;
   updateTodo: (todo: Todo | null) => void;
 }
+
+export interface updateTodoVariables {
+  id: string;
+  title: string;
+}

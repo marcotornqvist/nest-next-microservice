@@ -2,22 +2,37 @@ import type { Todo, TodoContextType } from '../types';
 import styles from '../styles/modules/TodoItem.module.scss';
 import buttonStyles from '../styles/modules/Button.module.scss';
 import { FC, useContext } from 'react';
+import {
+  useDeleteTodo,
+  useToggleIsCompleteTodo,
+} from '../react-query-hooks/todo-hooks';
 
 const TodoItem: FC<{
   todo: Todo;
   currentTodoId?: string;
   updateTodo: (currentTodo: Todo | null) => void;
 }> = ({ todo, currentTodoId, updateTodo }) => {
+  const deleteTodoMutation = useDeleteTodo();
+  const toggleIsCompleteTodoMutation = useToggleIsCompleteTodo();
+
   return (
     <li className={'todo-item ' + styles.todo}>
       <h4>{todo.title}</h4>
       <div className="wrapper">
-        <button className={'danger ' + buttonStyles.button}>
-          {todo.isCompleted ? 'Completed' : 'Complete'}
-        </button>
-        <button className={'danger ' + buttonStyles.button}>Delete</button>
         <button
-          className={'success ' + buttonStyles.button}
+          className={'toggle-btn ' + buttonStyles.button}
+          onClick={() => toggleIsCompleteTodoMutation.mutate(todo.id)}
+        >
+          {todo.isCompleted ? 'Done' : 'Complete Todo'}
+        </button>
+        <button
+          className={'delete-btn ' + buttonStyles.button}
+          onClick={() => deleteTodoMutation.mutate(todo.id)}
+        >
+          Delete
+        </button>
+        <button
+          className={'update-btn ' + buttonStyles.button}
           onClick={() => updateTodo(currentTodoId === todo.id ? null : todo)}
         >
           {currentTodoId === todo.id ? 'Cancel' : 'Edit'}

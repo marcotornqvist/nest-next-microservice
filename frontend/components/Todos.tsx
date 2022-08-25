@@ -2,7 +2,7 @@ import { FC, useContext } from 'react';
 import type { Todo, TodoContextType } from '../types';
 import { useQuery } from '@tanstack/react-query';
 import { TodoContext } from '../context/todoContext';
-import { getAllTodos } from '../query-hooks/todo';
+import { getAllTodos } from '../react-query-hooks/todo-hooks';
 import TodoItem from './TodoItem';
 
 const Todos: FC = () => {

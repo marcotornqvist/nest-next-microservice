@@ -14,9 +14,7 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoEntity } from './entities/todo.entity';
-import { Todo, User } from '@prisma/client';
-import { JwtAuthGuard } from '@app/common';
-import { CurrentUser } from 'apps/auth/src/current-user.decorator';
+import { Todo } from '@prisma/client';
 
 @Controller('todos')
 @ApiTags('Todos')

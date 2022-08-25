@@ -27,12 +27,19 @@
       padding-left: 1rem;
 
       button {
-        max-width: 5rem;
+        min-width: 5rem;
+        width: auto;
+        padding: 0 1rem;
         height: 2rem;
         box-shadow: none;
       }
 
-      .danger {
+      .toggle-btn {
+        min-width: 8rem;
+      }
+
+      .delete-btn,
+      .toggle-btn {
         margin-right: 1rem;
       }
     }
