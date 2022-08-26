@@ -4,7 +4,12 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipeErrorsFormatted } from '@app/utils';
 
 async function bootstrap() {
-  const app = await NestFactory.create(TodosModule, { cors: true });
+  const app = await NestFactory.create(TodosModule, { 
+    cors: {
+      credentials: true,
+      origin: 'http://localhost:3000',
+    } 
+  });
   const config = new DocumentBuilder()
     .setTitle('Todos')
     .setDescription('The NestJS Todos API description')

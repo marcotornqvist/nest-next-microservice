@@ -1,11 +1,11 @@
-import type { Todo, TodoContextType } from '../types';
-import styles from '../styles/modules/TodoItem.module.scss';
-import buttonStyles from '../styles/modules/Button.module.scss';
-import { FC, useContext } from 'react';
+import { FC } from 'react';
+import type { Todo } from '../../types';
 import {
   useDeleteTodo,
   useToggleIsCompleteTodo,
-} from '../react-query-hooks/todo-hooks';
+} from '../../react-query-hooks/todo-hooks';
+import styles from '../../styles/modules/TodoItem.module.scss';
+import buttonStyles from '../../styles/modules/Button.module.scss';
 
 const TodoItem: FC<{
   todo: Todo;

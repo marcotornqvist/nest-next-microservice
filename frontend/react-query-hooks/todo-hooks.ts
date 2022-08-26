@@ -5,9 +5,12 @@ import { TodoContext } from '../context/todoContext';
 import axios from 'axios';
 
 // Get all todos
-export const getAllTodos = async () => {
-  const res = await fetch(`${process.env.BASE_URL}/todos`);
-  return res.json();
+export const getAllTodosByMe = async (): Promise<Todo[]> => {
+  const result = await axios.get(`${process.env.TODO_URL}/me`, {
+    withCredentials: true,
+  });
+
+  return result.data;
 };
 
 // Create a new todo
@@ -16,7 +19,8 @@ export const useCreateTodo = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    (title) => axios.post(`${process.env.BASE_URL}/todos`, { title }),
+    (title) =>
+      axios.post(process.env.TODO_URL!, { title }, { withCredentials: true }),
     {
       onMutate: async (title: string) => {
         setTitle('');
@@ -65,7 +69,11 @@ export const useUpdateTodo = () => {
 
   return useMutation(
     ({ title, id }: updateTodoVariables) =>
-      axios.patch(`${process.env.BASE_URL}/todos/${id}`, { title }),
+      axios.patch(
+        `${process.env.TODO_URL}/${id}`,
+        { title },
+        { withCredentials: true },
+      ),
     {
       onMutate: async ({ title, id }: updateTodoVariables) => {
         setTitle('');
@@ -95,7 +103,8 @@ export const useDeleteTodo = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    (id) => axios.delete(`${process.env.BASE_URL}/todos/${id}`),
+    (id) =>
+      axios.delete(`${process.env.TODO_URL}/${id}`, { withCredentials: true }),
     {
       onMutate: async (id: string) => {
         // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -124,7 +133,9 @@ export const useToggleIsCompleteTodo = () => {
 
   return useMutation(
     (id) =>
-      axios.patch(`${process.env.BASE_URL}/todos/toggleIsCompleted/${id}`),
+      axios.patch(`${process.env.TODO_URL}/toggleIsCompleted/${id}`, null, {
+        withCredentials: true,
+      }),
     {
       onMutate: async (id: string) => {
         // Cancel any outgoing refetches (so they don't overwrite our optimistic update)

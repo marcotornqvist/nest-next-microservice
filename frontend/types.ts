@@ -1,3 +1,17 @@
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
+export type User = {
+  id: string;
+  name: string | null;
+  email: string;
+  userRole: UserRole;
+  createdAt: Date;
+  updatedAt: Date | null;
+};
+
 export interface Todo {
   id: string;
   title: string;
@@ -24,4 +38,16 @@ export interface TodoContextType {
 export interface updateTodoVariables {
   id: string;
   title: string;
+}
+
+export interface loginVariables {
+  email: string;
+  password: string;
+}
+
+export interface RegisterVariables {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 }

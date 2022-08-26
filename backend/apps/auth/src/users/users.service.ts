@@ -15,6 +15,14 @@ import { UpdatePasswordRequest } from './dto/update-password.dto';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  async getMe(userId: string) {
+    return await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+  }
+
   async getUsers() {
     return this.prisma.user.findMany();
   }

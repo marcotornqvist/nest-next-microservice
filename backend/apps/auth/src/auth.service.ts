@@ -75,43 +75,40 @@ export class AuthService {
   }
 
   async login(@Body() { email, password }: LoginUserDto, response: Response) {
-    const { id: userId } = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         email,
       },
-      select: {
-        id: true,
-      },
     });
 
-    if (!userId) {
+    if (!user.id) {
       throw new NotFoundException('No user was found.');
     }
 
     const authenticationDetails = new AuthenticationDetails({
-      Username: userId,
+      Username: user.id,
       Password: password,
     });
 
     const userData = {
-      Username: userId,
+      Username: user.id,
       Pool: this.userPool,
     };
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       return new CognitoUser(userData).authenticateUser(authenticationDetails, {
-        onSuccess: (result) => {
+        onSuccess: (result: any) => {
           this.setAuthToken(result, response);
           resolve(result);
         },
-        onFailure: (err) => {
+        onFailure: (err: any) => {
           reject(err);
         },
       });
     });
   }
 
-  logout(response: Response) {
+  async logout(response: Response) {
     this.usersService.removeAuthToken(response);
   }
 
@@ -122,9 +119,14 @@ export class AuthService {
     const expires = new Date();
     expires.setSeconds(expires.getSeconds() + addTime);
 
+    const isProduction = process.env.NODE_ENV === 'production';
+
     response.cookie('Authentication', token, {
       httpOnly: true,
+      path: '/',
       expires,
+      // sameSite: isProduction ? 'none' : false,
+      // secure: isProduction,
     });
   }
 }

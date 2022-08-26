@@ -91,12 +91,12 @@ services:
       - 3000:3000
     stdin_open: true
     tty: true
-    depends_on:
-      - postgres
-      - rabbitmq
-      - todos
-      - notification
-      - auth
+    # depends_on:
+    #   - postgres
+    #   - rabbitmq
+    #   - todos
+    #   - notification
+    #   - auth
   # redis:
   #   container_name: redis
   #   image: redis:5

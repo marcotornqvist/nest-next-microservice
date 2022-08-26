@@ -10,7 +10,10 @@ NestJS application that implements a Microservice architecture with RabbitMQ as 
 - **Astro:** https://www.youtube.com/watch?v=PSzCtdM20Fc&ab_channel=JackHerrington
 
 **Websockets & React-query:** https://tkdodo.eu/blog/using-web-sockets-with-react-query
-**React-Query Mutations:** https://tkdodo.eu/blog/mastering-mutations-in-react-query
+
+Combine:
+
+https://www.youtube.com/watch?v=xMsJPnjiRAc
 
 <br />
 

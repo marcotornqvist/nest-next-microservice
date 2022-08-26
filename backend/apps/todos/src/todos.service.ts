@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '@app/common';
 import { Todo } from '@prisma/client';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -15,6 +20,17 @@ export class TodosService {
   async getAllTodos(): Promise<Todo[]> {
     return this.prisma.todo.findMany({
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async getAllTodosByMe(userId: string): Promise<Todo[]> {
+    return this.prisma.todo.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
@@ -44,8 +60,17 @@ export class TodosService {
     }
   }
 
-  async updateTodo(id: string, { title }: CreateTodoDto): Promise<Todo> {
-    await this.getTodoById(id);
+  async updateTodo(
+    userId: string,
+    id: string,
+    { title }: CreateTodoDto,
+  ): Promise<Todo> {
+    // Check that todo exists
+    const todo = await this.getTodoById(id);
+
+    if (userId !== todo.userId) {
+      throw new ForbiddenException('Not Authorized.');
+    }
 
     // Updates the title of the todo
     return this.prisma.todo.update({
@@ -58,8 +83,13 @@ export class TodosService {
     });
   }
 
-  async toggleIsCompletedTodo(id: string): Promise<boolean> {
+  async toggleIsCompletedTodo(userId: string, id: string): Promise<boolean> {
+    // Check that todo exists
     const todo = await this.getTodoById(id);
+
+    if (userId !== todo.userId) {
+      throw new ForbiddenException('Not Authorized.');
+    }
 
     // Toggle isCompleted from true to false and vice versa
     const { isCompleted } = await this.prisma.todo.update({
@@ -77,8 +107,13 @@ export class TodosService {
     return isCompleted;
   }
 
-  async deleteTodo(id: string): Promise<boolean> {
-    await this.getTodoById(id);
+  async deleteTodo(userId: string, id: string): Promise<boolean> {
+    // Check that todo exists
+    const todo = await this.getTodoById(id);
+
+    if (userId !== todo.userId) {
+      throw new ForbiddenException('Not Authorized.');
+    }
 
     // Delete todo
     await this.prisma.todo.delete({
@@ -90,7 +125,7 @@ export class TodosService {
     return true;
   }
 
-  async getTodoById(id: string): Promise<Todo> {
+  private async getTodoById(id: string): Promise<Todo> {
     // Find todo by id
     const todo = await this.prisma.todo.findUnique({
       where: {

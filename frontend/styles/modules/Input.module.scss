@@ -9,17 +9,29 @@
     justify-content: flex-end;
     margin-bottom: 1rem;
 
-    label {
+    .top-message {
+      display: flex;
+      justify-content: space-between;
       margin-bottom: 0.5rem;
-      font-size: 14px;
-      font-weight: 500;
-      color: white;
+
+      label,
+      span {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      label {
+        color: white;
+      }
+
+      span {
+        color: $red;
+      }
     }
 
     .input-container {
       display: flex;
       align-items: center;
-      padding-right: 1rem;
       height: 3rem;
       min-width: 100%;
       border-radius: 6px;
@@ -29,7 +41,6 @@
       input {
         height: 100%;
         width: 100%;
-        padding-right: 1rem;
         border: none;
         outline: none;
         background: none;
@@ -39,6 +50,7 @@
         cursor: pointer;
         width: 2rem;
         fill: #d9d9d9 !important;
+        margin-left: 1rem;
       }
     }
   }

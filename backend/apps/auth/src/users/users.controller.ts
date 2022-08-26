@@ -1,13 +1,32 @@
-import { Body, Controller, Delete, Get, Patch, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response } from 'express';
 import { UpdateEmailRequest } from './dto/update-email.dto';
 import { UpdateNameRequest } from './dto/update-name.dto';
 import { UpdatePasswordRequest } from './dto/update-password.dto';
+import { User } from '@prisma/client';
+import { CurrentUser } from '../current-user.decorator';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@app/common';
 
 @Controller('auth/users')
+@ApiTags('auth/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMe(@CurrentUser() user: User) {
+    return this.usersService.getMe(user.id);
+  }
 
   @Get()
   async getUsers() {

@@ -1,9 +1,12 @@
-import { useContext, SyntheticEvent, FC } from 'react';
-import { TodoContext } from '../context/todoContext';
-import { TodoContextType } from '../types';
-import { useCreateTodo, useUpdateTodo } from '../react-query-hooks/todo-hooks';
-import styles from '../styles/modules/Button.module.scss';
-import inputStyles from '../styles/modules/Input.module.scss';
+import { useContext, SyntheticEvent, FC, useState, useEffect } from 'react';
+import { TodoContext } from '../../context/todoContext';
+import { TodoContextType } from '../../types';
+import {
+  useCreateTodo,
+  useUpdateTodo,
+} from '../../react-query-hooks/todo-hooks';
+import styles from '../../styles/modules/Button.module.scss';
+import inputStyles from '../../styles/modules/Input.module.scss';
 
 // ------IMPORTANT------- implement below logic as hooks in query-hooks folder: https://tkdodo.eu/blog/mastering-mutations-in-react-query
 
@@ -11,23 +14,37 @@ const Form: FC = () => {
   const { title, setTitle, currentTodo, updateTodo } = useContext(
     TodoContext,
   ) as TodoContextType;
+  const [error, setError] = useState('');
   const updateTodoMutation = useUpdateTodo();
   const createTodoMutation = useCreateTodo();
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    if (currentTodo) {
-      updateTodoMutation.mutate({ title, id: currentTodo.id });
-      updateTodo(null);
+    setError('');
+
+    if (title.length > 0) {
+      if (currentTodo) {
+        updateTodoMutation.mutate({ title, id: currentTodo.id });
+        updateTodo(null);
+      } else {
+        createTodoMutation.mutate(title);
+      }
     } else {
-      createTodoMutation.mutate(title);
+      setError('Title is too short.');
     }
   };
+
+  useEffect(() => {
+    setError('');
+  }, [title]);
 
   return (
     <form className="form-container" onSubmit={handleSubmit}>
       <div className={inputStyles.inputGroup}>
-        <label>Todo Name</label>
+        <div className="top-message">
+          <label>Todo Name</label>
+          <span>{error}</span>
+        </div>
         <div className="input-container">
           <input
             type="text"

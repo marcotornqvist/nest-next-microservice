@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
-import Form from '../components/Form';
-import Todos from '../components/Todos';
+import Form from '../components/todo/Form';
+import Todos from '../components/todo/Todos';
 
 const Home: NextPage = () => {
   return (
