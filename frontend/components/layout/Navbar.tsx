@@ -5,6 +5,8 @@ import { useLogout } from '../../react-query-hooks/auth-hooks';
 import { User } from '../../types';
 import Link from 'next/link';
 import styles from '../../styles/modules/Navbar.module.scss';
+import { fetcher, refreshTokens } from '../../utils/fetcher';
+import axios from 'axios';
 
 const Navbar: FC = () => {
   const { asPath } = useRouter();

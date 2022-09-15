@@ -16,11 +16,15 @@ export class JwtAuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const authentication = this.getAuthentication(context);
+    // authentication variable breaks if no cookie is provided
+    const authentication = this.getRefreshToken(context);
+    const idToken = context.switchToHttp().getRequest().headers.idtoken;
+    console.log(idToken);
 
     return this.authClient
       .send('validate_user', {
-        Authentication: authentication,
+        // Authentication: authentication,
+        Authentication: idToken,
       })
       .pipe(
         tap((res) => {
@@ -32,7 +36,7 @@ export class JwtAuthGuard implements CanActivate {
       );
   }
 
-  private getAuthentication(context: ExecutionContext) {
+  private getRefreshToken(context: ExecutionContext) {
     let authentication: string;
 
     if (context.getType() === 'rpc') {

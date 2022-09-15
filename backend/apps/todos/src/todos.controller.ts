@@ -17,6 +17,7 @@ import { TodoEntity } from './entities/todo.entity';
 import { Todo, User } from '@prisma/client';
 import { JwtAuthGuard } from '@app/common';
 import { CurrentUser } from 'apps/auth/src/current-user.decorator';
+import { Request } from 'express-jwt';
 
 @Controller('todos')
 @ApiTags('Todos')
@@ -28,7 +29,6 @@ export class TodosController {
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: TodoEntity, isArray: true })
   async getAllTodos(@CurrentUser() user: User): Promise<Todo[]> {
-    console.log(user);
     return this.todosService.getAllTodos();
   }
 
@@ -44,13 +44,13 @@ export class TodosController {
   @ApiCreatedResponse({ type: TodoEntity })
   async createTodo(
     @Body() body: CreateTodoDto,
-    @Req() req: any,
+    @Req() request: Request,
     @CurrentUser() user: User,
   ): Promise<Todo> {
     return this.todosService.createTodo(
       user.id,
       body,
-      req.cookies?.Authentication,
+      request.cookies?.Authentication,
     );
   }
 

@@ -15,6 +15,7 @@ const nextConfig = (phase) => {
     : process.env.NEXT_PUBLIC_AUTH_URL;
 
   return {
+    output: 'standalone',
     reactStrictMode: true,
     swcMinify: true,
     sassOptions: {

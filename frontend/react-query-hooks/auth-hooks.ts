@@ -26,14 +26,14 @@ export const useLogin = () => {
         });
         router.push('/');
       },
-      // onError: (error, variables, context) => {
-      //   // Remove optimistic todo from the todos list
-      //   queryClient.setQueryData(['todos'], (previous: any) => {
-      //     return previous.filter(
-      //       (todo: any) => todo.id !== context?.optimisticTodo.id,
-      //     );
-      //   });
-      // },
+      onError: (error, variables, context) => {
+        // Remove optimistic todo from the todos list
+        // queryClient.setQueryData(['todos'], (previous: any) => {
+        //   return previous.filter(
+        //     (todo: any) => todo.id !== context?.optimisticTodo.id,
+        //   );
+        // });
+      },
     },
   );
 };

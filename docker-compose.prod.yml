@@ -1,0 +1,101 @@
+# services:
+#   prisma-studio:
+#     container_name: prisma-studio
+#     image: timothyjmiller/prisma-studio:latest
+#     restart: unless-stopped
+#     env_file:
+#       - ./backend/.env
+#     ports:
+#       - 5555:5555
+#     depends_on:
+#       - postgres
+#   postgres:
+#     image: postgres
+#     container_name: postgres
+#     restart: always
+#     env_file:
+#       - ./backend/.env
+#     ports:
+#       - 5432:5432
+#     volumes:
+#       - docker-nest-postgres:/var/lib/postgresql/data
+#   rabbitmq:
+#     container_name: rabbitmq
+#     image: rabbitmq:3-management
+#     ports:
+#       - '5672:5672'
+#       - '15672:15672'
+#     # volumes:
+#     #   - /var/lib/rabbitmq
+#   todos:
+#     container_name: todos
+#     build:
+#       context: ./backend
+#       dockerfile: ./apps/todos/Dockerfile
+#       target: development
+#     command: npm run start:dev
+#     env_file:
+#       - ./backend/apps/todos/.env
+#     volumes:
+#       - ./backend:/usr/src/app
+#       - /usr/src/app/node_modules
+#     ports:
+#       - 4000:4000
+#     depends_on:
+#       - postgres
+#       - auth
+#       - notification
+#       - rabbitmq
+#       # - redis
+#   notification:
+#     container_name: notification
+#     build:
+#       context: ./backend
+#       dockerfile: ./apps/notification/Dockerfile
+#       target: development
+#     command: npm run start:dev notification
+#     env_file:
+#       - ./backend/apps/notification/.env
+#     volumes:
+#       - ./backend:/usr/src/app
+#       - /usr/src/app/node_modules
+#     depends_on:
+#       - postgres
+#       - auth
+#       - rabbitmq
+#   auth:
+#     container_name: auth
+#     build:
+#       context: ./backend
+#       dockerfile: ./apps/auth/Dockerfile
+#       target: development
+#     command: npm run start:dev auth
+#     env_file:
+#       - ./backend/apps/auth/.env
+#     volumes:
+#       - ./backend:/usr/src/app
+#       - /usr/src/app/node_modules
+#     depends_on:
+#       - postgres
+#       - rabbitmq
+#     ports:
+#       - 4001:4001
+#   next-app:
+#     container_name: frontend
+#     build:
+#       context: ./frontend
+#       dockerfile: Dockerfile.prod
+#       args:
+#         ENV_VARIABLE: ${ENV_VARIABLE}
+#         NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
+#     restart: always
+#     ports:
+#       - 3000:3000
+#     networks:
+#       - my_network
+# volumes:
+#   docker-nest-postgres:
+#   # - redis
+#   # - auth
+
+# version: '3'

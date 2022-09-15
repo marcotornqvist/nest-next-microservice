@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { FC, SyntheticEvent, useState } from 'react';
 import { useLogin } from '../react-query-hooks/auth-hooks';
 import styles from '../styles/modules/Button.module.scss';
 import inputStyles from '../styles/modules/Input.module.scss';

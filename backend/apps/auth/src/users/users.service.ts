@@ -103,6 +103,10 @@ export class UsersService {
       httpOnly: true,
       expires: new Date(),
     });
+    response.cookie('UserId', '', {
+      httpOnly: true,
+      expires: new Date(),
+    });
   }
 
   // changePassword({ currentPassword, newPassword }) {
